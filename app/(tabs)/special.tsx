@@ -3,6 +3,12 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 
 
 export default function App() {
   const [price, setPrice] = useState('');
+  const [percentValue1, setpercentValue1] = useState('');
+  const [percentValue2, setpercentValue2] = useState('');
+
+  const [advanceValue1, setadvanceValue1] = useState('');
+  const [advanceValue2, setadvanceValue2] = useState('');
+
   const [results, setResults] = useState({
     months: '',
     total: '',
@@ -32,11 +38,11 @@ export default function App() {
 
   const calculateShortTimePlan = () => {
     const cashPrice = parseFloat(price) || 0;
-    const percentValue = 22; // Fixed for Short Time Plan
-    const advanceValue = 2.5; // Fixed for Short Time Plan
+    const percent1 = parseFloat(percentValue1) || 22; // Fixed for Short Time Plan 22
+    const advance1 = parseFloat(advanceValue1) || 2.5; // Fixed for Short Time Plan 2.5
 
-    const totalPrice = cashPrice * (1 + percentValue / 100);
-    const advanceAmount = totalPrice / advanceValue;
+    const totalPrice = cashPrice * (1 + percent1 / 100);
+    const advanceAmount = totalPrice / advance1;
     const monthCount = getMonthCountShort(totalPrice);
     const dailyPayment = (totalPrice - advanceAmount) / monthCount / 30 + 50;
     const monthlyPayment = (totalPrice - advanceAmount) / monthCount;
@@ -54,11 +60,11 @@ export default function App() {
 
   const calculateLongTimePlan = () => {
     const cashPrice = parseFloat(price) || 0;
-    const percentValue = 44; // Fixed for Long Time Plan
-    const advanceValue = 4.5; // Fixed for Long Time Plan
+    const percent2 = parseFloat(percentValue2) || 44; // Fixed for Short Time Plan 22
+    const advance2 = parseFloat(advanceValue2) || 4.5; // Fixed for Short Time Plan 2.5
 
-    const totalPrice = cashPrice * (1 + percentValue / 100);
-    const advanceAmount = totalPrice / advanceValue;
+    const totalPrice = cashPrice * (1 + percent2 / 100);
+    const advanceAmount = totalPrice / advance2;
     const monthCount = getMonthCountLong(totalPrice);
     const dailyPayment = (totalPrice - advanceAmount) / monthCount / 30 + 50;
     const monthlyPayment = (totalPrice - advanceAmount) / monthCount;
@@ -89,22 +95,67 @@ export default function App() {
         />
       </View>
 
+      <View style={styles.inputContainer}>
+        <Text style={styles.labelshort}>Percent Short Time</Text>
+        <TextInput
+          style={styles.input}
+          keyboardType="numeric"
+          placeholder="Enter percent 22"
+          value={percentValue1}
+          onChangeText={setpercentValue1}
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <Text style={styles.labellong}>Percent Long Time</Text>
+        <TextInput
+          style={styles.input}
+          keyboardType="numeric"
+          placeholder="Enter percent 44"
+          value={percentValue2}
+          onChangeText={setpercentValue2}
+        />
+      </View>
+
+      <View style={styles.inputContainer}>
+        <Text style={styles.labelshort}>Advance Short Time%</Text>
+        <TextInput
+          style={styles.input}
+          keyboardType="numeric"
+          placeholder="Enter Advance  2.5"
+          value={advanceValue1}
+          onChangeText={setadvanceValue1}
+        />
+      </View>
+
+      <View style={styles.inputContainer}>
+        <Text style={styles.labellong}>Advance Long Time%</Text>
+        <TextInput
+          style={styles.input}
+          keyboardType="numeric"
+          placeholder="Enter Advance  4.5"
+          value={advanceValue2}
+          onChangeText={setadvanceValue2}
+        />
+      </View>
+
+
       <View style={styles.buttonGroup}>
-        <TouchableOpacity style={styles.planButton} onPress={calculateShortTimePlan}>
+        <TouchableOpacity style={styles.planButtonshort} onPress={calculateShortTimePlan}>
           <Text style={styles.planButtonText}>Short Time Plan</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.planButton} onPress={calculateLongTimePlan}>
+        <TouchableOpacity style={styles.planButtonlong} onPress={calculateLongTimePlan}>
           <Text style={styles.planButtonText}>Long Time Plan</Text>
         </TouchableOpacity>
       </View>
 
      
       <View style={styles.resultsContainer}>
-      <Text style={styles.resultsHeader}>Cash Price   {price}</Text>
+  <Text style={styles.resultsHeader}>Cash Price   {price}</Text>
 
-<Text style={styles.logoname}>Ummat Electronics & Traders (03128780897)</Text>
+  <Text style={styles.logoname}>Ummat Electronics & Traders</Text>
+  <Text style={styles.logoname}>(03128780897)</Text>
 
-<Text style={styles.resultsHeader}>Installment Payment</Text>
+  <Text style={styles.resultsHeader}>Installment Payment</Text>
 
   <View style={styles.resultCard}>
     <View style={styles.resultRow}>
@@ -132,6 +183,8 @@ export default function App() {
       <Text style={styles.resultValue}>{results.daily}</Text>
     </View>
   </View>
+
+
 </View>
 
     </ScrollView>
@@ -162,6 +215,18 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     color: '#555',
   },
+  labelshort: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 5,
+    color: 'red',
+  },
+  labellong: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 5,
+    color: '#28a745',
+  },
   input: {
     width: '100%',
     padding: 10,
@@ -176,7 +241,15 @@ const styles = StyleSheet.create({
     width: '100%',
     marginBottom: 20,
   },
-  planButton: {
+  planButtonshort: {
+    flex: 1,
+    padding: 15,
+    backgroundColor: 'red',
+    borderRadius: 8,
+    alignItems: 'center',
+    marginHorizontal: 5,
+  },
+  planButtonlong: {
     flex: 1,
     padding: 15,
     backgroundColor: '#28a745',
@@ -221,7 +294,7 @@ const styles = StyleSheet.create({
       textAlign: 'center',
     },
     logoname: {
-      fontSize: 23,
+      fontSize: 22,
       fontWeight: 'bold',
       color: 'black',
       marginBottom: 15,

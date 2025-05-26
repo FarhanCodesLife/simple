@@ -1,110 +1,211 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 
-import { Collapsible } from '@/components/Collapsible';
-import { ExternalLink } from '@/components/ExternalLink';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import { IconSymbol } from '@/components/ui/IconSymbol';
+export default function App() {
+  const [price, setPrice] = useState('');
+  const [percent, setPercent] = useState('44');
+  const [advance, setAdvance] = useState('4.5');
+  const [results, setResults] = useState({
+    months: '',
+    total: '',
+    advance: '',
+    daily: '',
+  });
 
-export default function TabTwoScreen() {
+  const getMonthCount = (amount:number) => {
+    if (amount < 3900) return 1;
+    if (amount < 11000) return 2;
+    if (amount < 22000) return 3;
+    if (amount < 35000) return 4;
+    if (amount < 51000) return 5;
+    return 6;
+  };
+
+  const calculatePlan = () => {
+    const cashPrice = parseFloat(price) || 0;
+    const percentValue = parseFloat(percent) || 44;
+    const advanceValue = parseFloat(advance) || 4.5;
+
+    const totalPrice = cashPrice * (1 + percentValue / 100);
+    const advanceAmount = totalPrice / advanceValue / 2;
+    const monthCount = getMonthCount(totalPrice);
+    const dailyPayment = (totalPrice - advanceAmount) / monthCount / 30;
+
+    setResults({
+      months: `${monthCount} Months`,
+      total: totalPrice.toFixed(0),
+      advance: advanceAmount.toFixed(0),
+      daily: dailyPayment.toFixed(0),
+    });
+  };
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
-      headerImage={
-        <IconSymbol
-          size={310}
-          color="#808080"
-          name="chevron.left.forwardslash.chevron.right"
-          style={styles.headerImage}
+    <ScrollView contentContainerStyle={styles.container}>
+      <Text style={styles.header}>Shopkeeper Plan</Text>
+
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Cash Price</Text>
+        <TextInput
+          style={styles.input}
+          keyboardType="numeric"
+          placeholder="Enter Cash Price"
+          value={price}
+          onChangeText={setPrice}
         />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Explore</ThemedText>
-      </ThemedView>
-      <ThemedText>This app includes example code to help you get started.</ThemedText>
-      <Collapsible title="File-based routing">
-        <ThemedText>
-          This app has two screens:{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/explore.tsx</ThemedText>
-        </ThemedText>
-        <ThemedText>
-          The layout file in <ThemedText type="defaultSemiBold">app/(tabs)/_layout.tsx</ThemedText>{' '}
-          sets up the tab navigator.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/router/introduction">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Android, iOS, and web support">
-        <ThemedText>
-          You can open this project on Android, iOS, and the web. To open the web version, press{' '}
-          <ThemedText type="defaultSemiBold">w</ThemedText> in the terminal running this project.
-        </ThemedText>
-      </Collapsible>
-      <Collapsible title="Images">
-        <ThemedText>
-          For static images, you can use the <ThemedText type="defaultSemiBold">@2x</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">@3x</ThemedText> suffixes to provide files for
-          different screen densities
-        </ThemedText>
-        <Image source={require('@/assets/images/react-logo.png')} style={{ alignSelf: 'center' }} />
-        <ExternalLink href="https://reactnative.dev/docs/images">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Custom fonts">
-        <ThemedText>
-          Open <ThemedText type="defaultSemiBold">app/_layout.tsx</ThemedText> to see how to load{' '}
-          <ThemedText style={{ fontFamily: 'SpaceMono' }}>
-            custom fonts such as this one.
-          </ThemedText>
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/versions/latest/sdk/font">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Light and dark mode components">
-        <ThemedText>
-          This template has light and dark mode support. The{' '}
-          <ThemedText type="defaultSemiBold">useColorScheme()</ThemedText> hook lets you inspect
-          what the user&apos;s current color scheme is, and so you can adjust UI colors accordingly.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Animations">
-        <ThemedText>
-          This template includes an example of an animated component. The{' '}
-          <ThemedText type="defaultSemiBold">components/HelloWave.tsx</ThemedText> component uses
-          the powerful <ThemedText type="defaultSemiBold">react-native-reanimated</ThemedText>{' '}
-          library to create a waving hand animation.
-        </ThemedText>
-        {Platform.select({
-          ios: (
-            <ThemedText>
-              The <ThemedText type="defaultSemiBold">components/ParallaxScrollView.tsx</ThemedText>{' '}
-              component provides a parallax effect for the header image.
-            </ThemedText>
-          ),
-        })}
-      </Collapsible>
-    </ParallaxScrollView>
+      </View>
+
+      
+
+    
+
+      <TouchableOpacity style={styles.button} onPress={calculatePlan}>
+        <Text style={styles.buttonText}>Calculate</Text>
+      </TouchableOpacity>
+
+      <View style={styles.resultsContainer}>
+      <Text style={styles.resultsHeader}>Cash Price {price}</Text>
+
+<Text style={styles.logoname}>Ummat Electronics & Traders (03128780897)</Text>
+
+<Text style={styles.resultsHeader}>Installment Payment</Text>
+  <View style={styles.resultCard}>
+    <View style={styles.resultRow}>
+      <Text style={styles.resultLabel}>Months:</Text>
+      <Text style={styles.resultValue}>{results.months}</Text>
+    </View>
+    <View style={styles.resultRow}>
+      <Text style={styles.resultLabel}>Total Price:</Text>
+      <Text style={styles.resultValue}>{results.total}</Text>
+    </View>
+    <View style={styles.resultRow}>
+      <Text style={styles.resultLabel}>Advance:</Text>
+      <Text style={styles.resultValue}>{results.advance}</Text>
+    </View>
+    <View style={styles.resultRow}>
+      <Text style={styles.resultLabel}>Daily Payment:</Text>
+      <Text style={styles.resultValue}>{results.daily}</Text>
+    </View>
+  </View>
+</View>
+
+
+
+
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  headerImage: {
-    color: '#808080',
-    bottom: -90,
-    left: -35,
-    position: 'absolute',
+  container: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+    backgroundColor: '#f5f5f5',
   },
-  titleContainer: {
-    flexDirection: 'row',
-    gap: 8,
+  header: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 30,
+    color: '#333',
   },
+  inputContainer: {
+    width: '100%',
+    marginBottom: 20,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 5,
+    color: '#555',
+  },
+  input: {
+    width: '100%',
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    backgroundColor: '#fff',
+  },
+  button: {
+    width: '100%',
+    padding: 15,
+    backgroundColor: '#007bff',
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+
+  resultText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 10,
+  },
+  logoname: {
+    fontSize: 23,
+    fontWeight: 'bold',
+    color: 'black',
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+
+
+    resultsContainer: {
+      marginTop: 30,
+      width: '100%',
+      padding: 20,
+      backgroundColor: '#f9f9f9',
+      borderRadius: 12,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 4,
+      elevation: 4,
+      borderWidth: 1,
+      borderColor: '#e6e6e6',
+    },
+    resultsHeader: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      color: '#4a90e2',
+      marginBottom: 15,
+      textAlign: 'center',
+    },
+    resultCard: {
+      backgroundColor: '#fff',
+      borderRadius: 12,
+      padding: 15,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.08,
+      shadowRadius: 4,
+      elevation: 2,
+      borderWidth: 1,
+      borderColor: '#ddd',
+    },
+    resultRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      marginBottom: 10,
+      paddingVertical: 5,
+      borderBottomWidth: 1,
+      borderBottomColor: '#f2f2f2',
+    },
+    resultLabel: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: '#555',
+    },
+    resultValue: {
+      fontSize: 16,
+      fontWeight: 'bold',
+      color: '#333',
+    },
+  
 });
