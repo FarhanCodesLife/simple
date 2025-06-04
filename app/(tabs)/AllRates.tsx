@@ -10,7 +10,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { ref, listAll, getDownloadURL } from 'firebase/storage';
-import { storage } from './firebase'; // Make sure path is correct
+import { storage } from '../../firebase'; // Make sure path is correct
 
 interface PDFItem {
   name: string;
